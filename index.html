@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tetris</title>
+        
+        <link rel="shortcut icon" href="favicon.ico">
+        
+        <style type="text/css">
+            
+            @font-face {
+                font-family: "8BIT WONDER";
+                src: url("fonts/8-BIT WONDER.TTF");
+            }
+            
+            body { 
+                background:#343838 url(img/60degree_gray.png);
+                font-family:"8BIT WONDER"; 
+                color:#555;
+                color:#f3e678;
+                text-shadow:1px 1px 0px rgba(0,0,0,1);
+            }
+            
+            h1,h2,h3,h4,h5 { 
+                font-family:"8BIT WONDER"; 
+                text-align:center; 
+            }
+            
+            h1 {
+                color:#f3e678;
+                text-shadow:3px 3px 0px rgba(0,0,0,1);
+            }
+            
+            .container { width:273px; margin:auto auto; }
+            
+            .game-container {
+                width:300px;
+                height:600px;
+                position:relative;
+                overflow:hidden;
+                border:0.5em groove rgba(255, 255, 255, 0.7); 
+                border-radius:7px;
+                box-shadow: 0px 0px 15px #000;
+            }
+            
+            .game { 
+                background:#000 url(img/classy_fabric.png);
+                
+            }
+            
+            .game-container .overlay { 
+                position:absolute;
+                top:100px;
+                left:0px;
+                width:300px;
+                height:400px;
+            }
+            
+            .tile-0, .tile-1, .tile-2, .tile-3, .tile-4, .tile-5, .tile-6, .tile-7{
+                box-shadow: inset 1px 1px 0px rgba(255, 255, 255, 0.1);
+            }
+            
+            .tile-1 { background:#36b3b3; }
+            .tile-2 { background:#3636b3; }
+            .tile-3 { background:#b38636; }
+            .tile-4 { background:#b3b336; }
+            .tile-5 { background:#36b336; }
+            .tile-6 { background:#b336b3; }
+            .tile-7 { background:#b33636; }
+            
+            .tile-1, .tile-2, .tile-3, .tile-4, .tile-5, .tile-6, .tile-7{
+                border-radius:2px;
+                box-shadow: 
+                    inset -3px -3px 0px rgba(0, 0, 0, 0.5), 
+                    inset 3px 3px 0px rgba(255, 255, 255, 0.3), 
+                    0px 0px 0px 2px rgba(0, 0, 0, 0.5);
+            }
+            
+            .piece{
+                
+            }
+            
+            .piece .tile-0{
+                box-shadow: none;
+            }
+            
+            .status-container{ margin-bottom:1em; }
+            
+        </style>
+        
+        <script src="vendor/underscore-1.5.2.min.js"></script>
+        <script src="vendor/jquery-1.10.2.min.js"></script>
+        <script src="vendor/eventemitter-4.2.5.min.js"></script>
+        
+        <script src="tetris/utils.js"></script>
+        <script src="tetris/input.js"></script>
+        <script src="tetris/menu.js"></script>
+        <script src="tetris/matrix.js"></script>
+        <script src="tetris/game_state.js"></script>
+        <script src="tetris/game_mode.js"></script>
+        <script src="tetris/score.js"></script>
+        <script src="tetris/player_controller.js"></script>
+        <script src="tetris/render_on_dom.js"></script>
+        <script src="tetris/render_on_canvas.js"></script>
+    </head>
+    
+    <body>
+        <audio src="sounds/bell.ogg" id="sound-ding1"></audio>
+        <audio src="sounds/bell.ogg" id="sound-ding2"></audio>
+        <audio src="sounds/bell.ogg" id="sound-ding3"></audio>
+        <audio src="sounds/bell.ogg" id="sound-ding4"></audio>
+        
+        <div class="container">
+            
+            <div class="status-container">
+                <div id="preview" style="width:100px; height:100px;"></div>
+                <div id="level"></div>
+                <div id="score"></div>
+                <div id="lines"></div>
+            </div>
+            
+            <div class="game-container">
+                <div id="game" class="game" style="width:300px; height: 600px;"></div>
+                <div class="overlay" id="menu"></div>
+            </div>
+        </div>
+        
+        <script type="text/javascript">
+            
+            function createGame(){
+                
+                var game = new GameState(10, 20);
+                
+                var pieces = [
+                    ["\n1111\n\n",      2, 1.5],
+                    ["2\n222\n",        1, 1], 
+                    ["003\n333\n",      1, 1], 
+                    ["0440\n0440\n",    2, 0.5], 
+                    ["055\n55\n",       1, 1], 
+                    ["06\n666\n",       1, 1], 
+                    ["77\n077\n",       1, 1]
+                ];
+                
+                
+                for(var i = 0; i < pieces.length; i++){
+                    game.loadPieceMatrix(game.createMatrixFromString(pieces[i]));
+                }
+                
+                return game;
+            }
+            
+            function createPlayerController(game){
+                
+                var player = new PlayerController(game);
+                
+                player.bindKeys({
+                    37: {action: "left",            delay: 100},
+                    38: {action: "rotate",          delay: 200},
+                    39: {action: "right",           delay: 100},
+                    40: {action: "down",            delay: 40},
+                    32: {action: "drop",            delay: 0},
+                    80: {action: "togglePause",     delay: 0}
+                });
+                
+                return player;
+            }
+            
+            function initStartMenu(menu, game){
+                
+                var el = document.createElement("div");
+                el.appendChild(menu.title("Tetris"));
+                
+                var hide;
+                
+                var playButton = menu.button("Play", function(){
+                    game.start();    
+                });
+                
+                el.appendChild(playButton);
+                
+                game.once('start', function(){
+                    hide(); 
+                });
+                
+                hide = menu.show(el);
+            }
+            
+            function initPauseMenu(menu, game){
+                
+                var el = document.createElement("div");
+                el.appendChild(menu.title("Paused"));
+                
+                var resumeButton = menu.button("Resume", function(){
+                    game.resume();
+                });
+                
+                el.appendChild(resumeButton);
+                
+                var hide;
+                
+                game.on('pause', function(){
+                    hide = menu.show(el);
+                });
+                
+                game.on('resume', function(){
+                    hide(); 
+                });
+            }
+            
+            function initGameoverMenu(menu, game){
+                
+                var el = document.createElement("div");
+                
+                el.appendChild(menu.title("Game Over"));
+                
+                var restartButton = menu.button("New game", function(){
+                    game.start();
+                });
+                
+                el.appendChild(restartButton);
+                
+                var hide = $.noop;
+                
+                game.on('gameover', function(){
+                    hide = menu.show(el);
+                });
+                
+                game.on('start', function(){
+                   hide();
+                });
+            }
+            
+            function initGameUI(game, gameMode, gameElement, menuElement){
+                
+                var view = new GameDOMRenderer(gameElement, game);
+                
+                var menu = new Menu(menuElement, gameElement);
+                
+                initStartMenu(menu, game);
+                initPauseMenu(menu, game);
+                initGameoverMenu(menu, game);
+                
+                var controller = createPlayerController(game);
+            }
+            
+            function initStatusUI(score, scoreElement, linesElement, levelElement){
+                
+                var update = function(){
+                    $(scoreElement).text("Score: " + score.getScore());
+                    $(linesElement).text("Lines: " + score.getLines());
+                    $(levelElement).text("Level: " + score.getLevel());
+                };
+                
+                score.on('update', update);
+                
+                update();
+            }
+            
+            
+            var game = createGame();
+            var gameMode = new PlayerGameMode(game);
+            var gameScore = new Score(game, gameMode);
+            
+            initGameUI(game, gameMode, $("#game"), $("#menu"));
+            
+            initStatusUI(gameScore, $("#score"), $("#lines"), $("#level"));
+            
+            $(window).blur(function(){
+                game.pause();
+            });
+            
+            game.on("collapse", function(collapses){
+                
+                var sounds = [
+                    document.getElementById("sound-ding1"),
+                    document.getElementById("sound-ding2"),
+                    document.getElementById("sound-ding3"),
+                    document.getElementById("sound-ding4")
+                ];
+                
+                for(var i = 0; i < collapses.length; i++){
+                    setTimeout(sounds[i].play.bind(sounds[i]), i * 150);
+                }
+                
+            });
+            
+            game.on('set-next-piece', function(index, matrix){
+                var preview = new MatrixDOMRenderer($("#preview"), createPaddedMatrix(matrix, 4, 4));
+                preview._render();
+            });
+            
+        </script>
+    </body>
+</html>
