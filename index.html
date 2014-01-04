@@ -12,6 +12,12 @@
                 src: url("fonts/8-BIT WONDER.TTF");
             }
             
+            @-webkit-keyframes pulsate {
+                0% {-webkit-transform: scale(1.0, 1.0);}
+                50% {-webkit-transform: scale(1.1, 1.1);}
+                100% {-webkit-transform: scale(1.0, 1.0);}
+            }
+                
             body { 
                 background:#343838 url(img/60degree_gray.png);
                 font-family:"8BIT WONDER"; 
@@ -30,21 +36,64 @@
                 text-shadow:3px 3px 0px rgba(0,0,0,1);
             }
             
-            .container { width:273px; margin:auto auto; }
+            .container { width:544px; margin:1em auto; }
+            
+            .btn {
+                display:inline-block;
+                cursor:pointer;
+                padding:0.75em; 
+                font-family:"8BIT WONDER";
+                background:#36b336;
+                border:3px solid black;
+                border-radius:6px;
+                box-shadow: inset -3px -3px 0px rgba(0, 0, 0, 0.5), 
+                    inset 3px 3px 0px rgba(255, 255, 255, 0.3);
+                    
+                -webkit-animation: pulsate 1s ease-out;
+                -webkit-animation-iteration-count: infinite; 
+            }
+            
+            .btn:active{
+                box-shadow: inset -3px -3px 0px rgba(255, 255, 255, 0.3), 
+                    inset 3px 3px 0px rgba(0, 0, 0, 0.5);
+            }
+            
+            .btn:hover{
+                -webkit-filter:brightness(130%);
+            }
             
             .game-container {
                 width:300px;
                 height:600px;
                 position:relative;
                 overflow:hidden;
-                border:0.5em groove rgba(255, 255, 255, 0.7); 
-                border-radius:7px;
-                box-shadow: 0px 0px 15px #000;
+                box-shadow: 0px 0px 15px #222;
             }
             
-            .game { 
+            .game-container, .status-container{
+                border:8px groove rgba(255, 255, 255, 0.7); 
+                border-radius:7px;
+            }
+            
+            .status-container{ 
+                float:right; 
+                width:200px; 
+                margin-top:20px;
+                padding:10px; 
+                margin-bottom:1em;
+                border-left:0;
+                box-shadow: 0px 0px 7px #222;
+                border-top-left-radius:0px;
+                border-bottom-left-radius:0px;       
+            }
+            
+            .game, .status-container{
                 background:#000 url(img/classy_fabric.png);
-                
+            }
+            
+            .status-container #preview { 
+                width:100px; height:100px; 
+                overflow:visible; 
             }
             
             .game-container .overlay { 
@@ -69,22 +118,17 @@
             
             .tile-1, .tile-2, .tile-3, .tile-4, .tile-5, .tile-6, .tile-7{
                 border-radius:2px;
-                box-shadow: 
-                    inset -3px -3px 0px rgba(0, 0, 0, 0.5), 
+                box-shadow: inset -3px -3px 0px rgba(0, 0, 0, 0.5), 
                     inset 3px 3px 0px rgba(255, 255, 255, 0.3), 
                     0px 0px 0px 2px rgba(0, 0, 0, 0.5);
             }
             
-            .piece{
-                
-            }
-            
-            .piece .tile-0{
+            .piece .tile-0, .status-container .tile-0{
                 box-shadow: none;
             }
             
-            .status-container{ margin-bottom:1em; }
             
+            #menu{ text-align:center;}
         </style>
         
         <script src="vendor/underscore-1.5.2.min.js"></script>
@@ -112,10 +156,15 @@
         <div class="container">
             
             <div class="status-container">
-                <div id="preview" style="width:100px; height:100px;"></div>
-                <div id="level"></div>
-                <div id="score"></div>
-                <div id="lines"></div>
+                
+                <table border="0" cellpadding="5">
+                    <tbody>
+                        <tr><td colspan="2" align="center"><div id="preview"></div></td></tr>
+                        <tr><td>Level</td><td><div id="level"></div></td></tr>
+                        <tr><td>Score</td><td><div id="score"></div></td></tr>
+                        <tr><td>Lines</td><td><div id="lines"></div></td></tr>
+                    </tbody>
+                </table>
             </div>
             
             <div class="game-container">
@@ -245,9 +294,9 @@
             function initStatusUI(score, scoreElement, linesElement, levelElement){
                 
                 var update = function(){
-                    $(scoreElement).text("Score: " + score.getScore());
-                    $(linesElement).text("Lines: " + score.getLines());
-                    $(levelElement).text("Level: " + score.getLevel());
+                    $(scoreElement).text(score.getScore());
+                    $(linesElement).text(score.getLines());
+                    $(levelElement).text(score.getLevel());
                 };
                 
                 score.on('update', update);
