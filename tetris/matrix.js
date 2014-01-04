@@ -79,10 +79,9 @@ Matrix.prototype.collapseRow = function(y){
             this._matrix[destination] = this._matrix[source];
         }
     }
-    else{
-        for(; destination >= 0; destination--){
-            this._matrix[destination] = 0;
-        }
+    
+    for(var index = 0; index < width; index++){
+        this._matrix[index] = 0;
     }
 };
 
@@ -100,7 +99,7 @@ Matrix.prototype.rotate = function(){
     
     this.forEachOpaque(function(x, y, value){
         
-        var newX = (y - originY) + originX;
+        var newX = ((y - originY)) + originX;
         var newY = (-(x - originX)) + originY;
                 
         result.set(Math.floor(newX), Math.floor(newY), value);
