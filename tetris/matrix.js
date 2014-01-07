@@ -3,8 +3,21 @@ function Matrix(width, height, originX, originY){
     
     this._width = width;
     this._height = height;
-    this._originX = originX;
-    this._originY = originY;
+    
+    if(originX !== void 0){
+        this._originX = originX;
+    }
+    else{
+        this._originX = width / 2;
+    }
+    
+    if(originY !== void 0){
+        this._originY = originY;
+    }
+    else{
+        this._originY = height / 2;
+    }
+    
     this._matrix = [];
     
     this.clear();
@@ -90,8 +103,6 @@ Matrix.prototype.rotate = function(){
     var width = this._width;
     var height = this._height;
     
-    var size = Math.max(width, height);
-    
     var originX = this._originX;
     var originY = this._originY;
     
@@ -99,9 +110,9 @@ Matrix.prototype.rotate = function(){
     
     this.forEachOpaque(function(x, y, value){
         
-        var newX = ((y - originY)) + originX;
-        var newY = (-(x - originX)) + originY;
-                
+        var newX = (-(y - originY)) + originX - 1;
+        var newY = (x - originX) + originY;
+        
         result.set(Math.floor(newX), Math.floor(newY), value);
         
         return true;
