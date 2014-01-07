@@ -13,11 +13,11 @@
             }
             
             @-webkit-keyframes pulsate {
-                0% {-webkit-transform: scale(1.0, 1.0);}
-                50% {-webkit-transform: scale(1.1, 1.1);}
-                100% {-webkit-transform: scale(1.0, 1.0);}
+                0% {-webkit-filter: brightness(100%);}
+                50% {-webkit-filter: brightness(130%);}
+                100% {-webkit-filter: brightness(100%);}
             }
-                
+            
             body { 
                 background:#343838 url(img/60degree_gray.png);
                 font-family:"8BIT WONDER"; 
@@ -59,7 +59,7 @@
             }
             
             .btn:hover{
-                -webkit-filter:brightness(130%);
+                -webkit-filter:brightness(150%);
             }
             
             .game-container {
@@ -180,15 +180,14 @@
                 var game = new GameState(10, 20);
                 
                 var pieces = [
-                    ["\n1111\n\n",      2, 1.5],
-                    ["2\n222\n",        1, 1], 
-                    ["003\n333\n",      1, 1], 
-                    ["0440\n0440\n",    2, 0.5], 
-                    ["055\n55\n",       1, 1], 
-                    ["06\n666\n",       1, 1], 
-                    ["77\n077\n",       1, 1]
+                    "\n1111\n\n",
+                    "2\n222\n", 
+                    "003\n333\n",
+                    "0440\n0440\n",
+                    "055\n55\n",
+                    "06\n666\n",
+                    "77\n077\n"
                 ];
-                
                 
                 for(var i = 0; i < pieces.length; i++){
                     game.loadPieceMatrix(game.createMatrixFromString(pieces[i]));

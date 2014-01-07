@@ -101,9 +101,16 @@ GameState.prototype.loadNextMovingPiece = function(){
 
 GameState.prototype.createMatrixFromString = function(spec){
     
-    var string = spec[0];
-    var originX = spec[1];
-    var originY = spec[2];
+    var string, originX, originY;
+    
+    if(typeof spec === "string"){
+        string = spec;
+    }
+    else if(typeof spec === "array"){
+        string = spec[0];
+        originX = spec[1];
+        originY = spec[2];
+    }
     
     var maxX = 0;
     
