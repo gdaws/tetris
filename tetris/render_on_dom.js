@@ -62,6 +62,17 @@ MatrixDOMRenderer.prototype._render = function(){
     }
 };
 
+MatrixDOMRenderer.prototype.getRowOfTiles = function(y){
+    var width = this._matrix.getWidth();
+    var start = y * width;
+    var end = start + width;
+    var tiles = [];
+    for(var i = start; i < end; i++){
+        tiles.push(this._tiles[i]);
+    }
+    return tiles;
+};
+
 MatrixDOMRenderer.prototype._update = function(){
     
     var matrix = this._matrix;
@@ -83,14 +94,34 @@ function GameDOMRenderer(container, game){
     
     this._piece = null;
     
+    this._blockBackgroundUpdate = false;
+    
     var self = this;
     
     game.on('hit', function(){
         self.updateBackground();
     });
     
+    game.on('collapse', function(collapses){
+        
+        self._blockBackgroundUpdate = true;
+        
+        game.pause();
+        
+        for(var i = 0; i < collapses.length; i++){
+            var y = collapses[i];
+            $(self.getRowOfTiles(y)).addClass('tile-collapsing');
+        }
+        
+        setTimeout(function(){
+            self._blockBackgroundUpdate = false;
+            self.updateBackground();
+            game.resume();
+        }, 300);
+    });
+    
     game.on('new-piece', function(){
-        self.renderMovingPiece(); 
+        self.renderMovingPiece();
     });
     
     game.on('move', function(){
@@ -114,7 +145,9 @@ GameDOMRenderer.prototype.renderBackground = function(){
 };
 
 GameDOMRenderer.prototype.updateBackground = function(){
-    this._update();
+    if(!this._blockBackgroundUpdate){
+        this._update();
+    }
 };
 
 GameDOMRenderer.prototype.renderMovingPiece = function(){
