@@ -12,6 +12,7 @@ function GameState(width, height){
     
     this._gameover = true;
     this._running = false;
+    this._pauseCount = 0;
     
     this.clearBackground();
     this.clearMovingPiece();
@@ -37,6 +38,7 @@ GameState.prototype.start = function(){
     
     this._gameover = false;
     this._running = true;
+    this._pauseCount = 0;
     
     this.emit('start');
 };
@@ -50,6 +52,9 @@ GameState.prototype.isPaused = function(){
 };
 
 GameState.prototype.pause = function(){
+    
+    this._pauseCount += 1;
+    
     if(this._running && !this._gameover){
         this._running = false;
         this.emit('pause');
@@ -57,7 +62,10 @@ GameState.prototype.pause = function(){
 };
 
 GameState.prototype.resume = function(){
-    if(!this._running && !this._gameover){
+    
+    this._pauseCount -= 1;
+    
+    if(!this._running && !this._gameover && this._pauseCount <= 0){
         this._running = true;
         this.emit('resume');
     }
@@ -177,11 +185,13 @@ GameState.prototype.collapse = function(minY, maxY){
     
     var width = this._width;
     
-    for(var y = maxY; y >= minY; y--){
+    for(var y = maxY, originalY = maxY; y >= minY; y--, originalY--){
+        
         if(this._background.isRowFilled(y)){
-            collapses.push(y);
+            collapses.push(originalY);
             this._background.collapseRow(y);
             y = maxY + 1;
+            originalY = y - collapses.length;
         }
     }
     
@@ -194,9 +204,9 @@ GameState.prototype.stopMovingPiece = function(){
 
     this._background.copy(this._movingPiecePosition.x, this._movingPiecePosition.y, this._movingPieceMatrix);
     
-    this.collapse(0, this._background.getHeight() - 1);
-    
     this.emit('hit');
+    
+    this.collapse(0, this._background.getHeight() - 1);
 };
 
 GameState.prototype.getCompositeMatrix = function(){
