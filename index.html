@@ -235,25 +235,33 @@
                 var el = document.createElement("div");
                 el.appendChild(menu.title("Paused"));
                 
-                var hide;
+                var hide = null;
                 
                 var resumeButton = menu.button("Resume", function(){
                     hide();
+                    hide = null;
                     // Let the menu resume the game
                 });
                 
                 el.appendChild(resumeButton);
                 
-                game.on('pause', function(){
-                    if(menu.getVisibleIndex() === -1){
-                        hide = menu.show(el);
+                var show = function(){
+                    
+                    if(game.isGameover() || hide){
+                       return;
                     }
-                });
+                    
+                    hide = menu.show(el);
+                };
                 
                 $(window).keydown(function(event){
                     if(event.keyCode === 80){
-                        hide = menu.show(el);
-                    } 
+                        show();
+                    }
+                });
+                
+                $(window).blur(function(){
+                    show();
                 });
             }
             
@@ -313,10 +321,6 @@
             initGameUI(game, gameMode, $("#game"), $("#menu"));
             
             initStatusUI(gameScore, $("#score"), $("#lines"), $("#level"));
-            
-            $(window).blur(function(){
-                game.pause();
-            });
             
             game.on("collapse", function(collapses){
                 
