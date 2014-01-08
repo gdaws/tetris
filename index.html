@@ -204,8 +204,7 @@
                     38: {action: "rotate",          delay: 200},
                     39: {action: "right",           delay: 100},
                     40: {action: "down",            delay: 40},
-                    32: {action: "drop",            delay: 0},
-                    80: {action: "togglePause",     delay: 0}
+                    32: {action: "drop",            delay: 0}
                 });
                 
                 return player;
@@ -236,20 +235,25 @@
                 var el = document.createElement("div");
                 el.appendChild(menu.title("Paused"));
                 
+                var hide;
+                
                 var resumeButton = menu.button("Resume", function(){
-                    game.resume();
+                    hide();
+                    // Let the menu resume the game
                 });
                 
                 el.appendChild(resumeButton);
                 
-                var hide;
-                
                 game.on('pause', function(){
-                    hide = menu.show(el);
+                    if(menu.getVisibleIndex() === -1){
+                        hide = menu.show(el);
+                    }
                 });
                 
-                game.on('resume', function(){
-                    hide(); 
+                $(window).keydown(function(event){
+                    if(event.keyCode === 80){
+                        hide = menu.show(el);
+                    } 
                 });
             }
             
@@ -280,7 +284,7 @@
                 
                 var view = new GameDOMRenderer(gameElement, game);
                 
-                var menu = new Menu(menuElement, gameElement);
+                var menu = new Menu(game, menuElement, gameElement);
                 
                 initStartMenu(menu, game);
                 initPauseMenu(menu, game);
@@ -301,7 +305,6 @@
                 
                 update();
             }
-            
             
             var game = createGame();
             var gameMode = new PlayerGameMode(game);

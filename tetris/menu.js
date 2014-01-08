@@ -1,55 +1,101 @@
 
-function Menu(foreground, background){
-
+function Menu(game, foreground, background){
+    
+    this._game = game;
+    
     this._foreground = $(foreground);
     this._background = $(background);
     
-    this._showing = false;
-    this._showId = 0;
-
+    this._dialogs = [];
 }
 
 Menu.prototype.show = function(element){
     
-    this._showing = true;
+    var index = this._dialogs.length;
     
-    var foreground = this._foreground;
-    var background = this._background;
+    this._dialogs.push(element);
     
-    background.css({
-        "-webkit-filter": "blur(2px) grayscale(100%)"
-    });
+    if(index === 0){
+        this._background.css({
+            "-webkit-filter": "blur(2px) grayscale(100%)"
+        });
+        this._game.pause();
+    }
     
-    foreground.empty().append(element).fadeIn();
-    
-    this._showId += 1;
-    var showId = this._showId;
+    this._showElement(element);
     
     var self = this;
     
     return function(){
-        if(self._showId == showId){
-            self.hide();
-        }
+        self.hide(index);
     };
 };
 
-Menu.prototype.hide = function(){
+Menu.prototype._showElement = function(element, callback){
+    var foreground = this._foreground;
+    foreground.fadeOut(200, function(){
+        foreground.empty();
+        if(element){
+            foreground.append(element).fadeIn(200, callback);
+        }
+        else{
+            if(callback){
+                callback();
+            }
+        }
+    });
+};
+
+Menu.prototype.getVisibleIndex = function(){
+    for(var index = this._dialogs.length - 1; index >= 0; index--){
+        if(this._dialogs[index] !== null){
+            return index;
+        }
+        else{
+            this._dialogs.pop();
+        }
+    }
+    return -1;
+};
+
+Menu.prototype.hide = function(index){
     
-    if(!this._showing){
+    if(index === void 0){
+        index = this._dialogs.length - 1;
+    }
+    
+    if(index >= this._dialogs.length){
         return;
     }
     
-    this._showing = false;
+    var visibleIndex = this.getVisibleIndex();
     
-    var foreground = this._foreground;
-    var background = this._background;
+    this._dialogs[index] = null;
     
-    background.css({
-        "-webkit-filter":"none"
-    });
-    
-    foreground.empty().fadeOut();
+    if(index === visibleIndex){
+        
+        var nextVisibleIndex = this.getVisibleIndex();
+        var nextVisible;
+        
+        if(nextVisibleIndex === -1){
+            this._dialogs = [];
+            nextVisible = null;
+        }
+        else{
+            nextVisible = this._dialogs[nextVisibleIndex];
+        }
+        
+        var self = this;
+        
+        this._showElement(nextVisible, function(){
+            if(self._dialogs.length === 0){
+                self._background.css({
+                    "-webkit-filter":"none"
+                });
+                self._game.resume();
+            }
+        });
+    }
 };
 
 Menu.prototype.title = function(text){
