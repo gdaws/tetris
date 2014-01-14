@@ -2,10 +2,28 @@
 <html>
     <head>
         <title>Tetris</title>
+        
         <link rel="shortcut icon" href="favicon.ico">
-        <link rel="stylesheet" href="css/package-13jan.css" type="text/css" />
-        <script src="js/package-13jan.js"></script>
+        
+        <link rel="stylesheet" href="css/tetris.css" type="text/css" />
+        
+        <script src="vendor/jquery-1.10.2.min.js"></script>
+        <script src="vendor/eventemitter-4.2.5.min.js"></script>
+        
+        <script src="tetris/utils.js"></script>
+        <script src="tetris/input.js"></script>
+        <script src="tetris/menu.js"></script>
+        <script src="tetris/matrix.js"></script>
+        <script src="tetris/game_state.js"></script>
+        <script src="tetris/game_mode.js"></script>
+        <script src="tetris/score.js"></script>
+        <script src="tetris/scoreboard.js"></script>
+        <script src="tetris/player_controller.js"></script>
+        <script src="tetris/render_on_dom.js"></script>
+        <script src="tetris/render_on_canvas.js"></script>
+        <script src="tetris/application.js"></script>
     </head>
+    
     <body>
         <audio src="sounds/bell.ogg" id="sound-ding1"></audio>
         <audio src="sounds/bell.ogg" id="sound-ding2"></audio>

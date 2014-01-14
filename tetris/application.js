@@ -1,0 +1,212 @@
+function createGame(){
+    
+    var game = new GameState(10, 20);
+    
+    var pieces = [
+        "\n1111\n\n",
+        "2\n222\n", 
+        "003\n333\n",
+        "0440\n0440\n",
+        "055\n55\n",
+        "06\n666\n",
+        "77\n077\n"
+    ];
+    
+    for(var i = 0; i < pieces.length; i++){
+        game.loadPieceMatrix(game.createMatrixFromString(pieces[i]));
+    }
+    
+    return game;
+}
+
+function createPlayerController(game){
+    
+    var player = new PlayerController(game);
+    
+    player.bindKeys({
+        37: {action: "left",            delay: 100},
+        38: {action: "rotate",          delay: 200},
+        39: {action: "right",           delay: 100},
+        40: {action: "down",            delay: 40},
+        32: {action: "drop",            delay: 0}
+    });
+    
+    return player;
+}
+
+function initStartMenu(menu, game){
+    
+    var el = document.createElement("div");
+    el.appendChild(menu.title("Tetris"));
+    
+    var hide;
+    
+    var playButton = menu.button("Play", function(){
+        game.start();    
+    });
+    
+    el.appendChild(playButton);
+    
+    game.once('start', function(){
+        hide(); 
+    });
+    
+    hide = menu.show(el);
+}
+
+function initPauseMenu(menu, game){
+    
+    var el = document.createElement("div");
+    el.appendChild(menu.title("Paused"));
+    
+    var hide = null;
+    
+    var resumeButton = menu.button("Resume", function(){
+        hide();
+        hide = null;
+        // Let the menu resume the game
+    });
+    
+    el.appendChild(resumeButton);
+    
+    var show = function(){
+        
+        if(game.isGameover() || hide){
+           return;
+        }
+        
+        hide = menu.show(el);
+    };
+    
+    $(window).keydown(function(event){
+        if(event.keyCode === 80){
+            show();
+        }
+    });
+    
+    $(window).blur(function(){
+        show();
+    });
+}
+
+function initGameoverMenu(menu, game, scoreboard){
+    
+    var el = document.createElement("div");
+    
+    el.appendChild(menu.title("Game Over"));
+    
+    var table = document.createElement("table");
+    table.className = "scoreboard";
+    
+    var thead = document.createElement("thead");
+    thead.appendChild(menu.tablerow([
+        "high scores"    
+    ], "th"));
+    table.appendChild(thead);
+    
+    var tbody = document.createElement("tbody");
+    table.appendChild(tbody);
+    
+    scoreboard.on('save', function(){
+        
+        var currentStats = scoreboard.getCurrentStats();
+        
+        $(tbody).empty();
+        var stats = scoreboard.getBestStats();
+        if(!stats){
+            return;
+        }
+        for(var i = 0; i < stats.length; i++){
+            
+            var tr = menu.tablerow([
+                stats[i].score
+            ]);
+            
+            if(stats[i].score === currentStats.score){
+                tr.className = "selected";
+            }
+            
+            tbody.appendChild(tr);
+        }
+    });
+    
+    el.appendChild(table);
+    
+    var restartButton = menu.button("New game", function(){
+        game.start();
+    });
+    
+    el.appendChild(restartButton);
+    
+    var hide = $.noop;
+    
+    game.on('gameover', function(){
+        hide = menu.show(el);
+    });
+    
+    game.on('start', function(){
+       hide();
+    });
+}
+
+function initGameUI(game, gameMode, gameScoreboard, gameElement, menuElement){
+    
+    var view = new GameDOMRenderer(gameElement, game);
+    
+    var menu = new Menu(game, menuElement, gameElement);
+    
+    initStartMenu(menu, game);
+    initPauseMenu(menu, game);
+    initGameoverMenu(menu, game, gameScoreboard);
+    
+    var controller = createPlayerController(game);
+}
+
+function initStatusUI(score, scoreElement, linesElement, levelElement){
+    
+    var update = function(){
+        $(scoreElement).text(score.getScore());
+        $(linesElement).text(score.getLines());
+        $(levelElement).text(score.getLevel());
+    };
+    
+    score.on('update', update);
+    
+    update();
+}
+
+
+function init(){
+    
+    var game = createGame();
+    var gameMode = new PlayerGameMode(game);
+    var gameScore = new Score(game, gameMode);
+    var gameScoreboard = new Scoreboard(gameScore, localStorage);
+
+    initGameUI(game, gameMode, gameScoreboard, $("#game"), $("#menu"));
+
+    initStatusUI(gameScore, $("#score"), $("#lines"), $("#level"));
+
+    game.on("collapse", function(collapses){
+        
+        var sounds = [
+            document.getElementById("sound-ding1"),
+            document.getElementById("sound-ding2"),
+            document.getElementById("sound-ding3"),
+            document.getElementById("sound-ding4")
+        ];
+        
+        for(var i = 0; i < collapses.length; i++){
+            setTimeout(sounds[i].play.bind(sounds[i]), i * 150);
+        }
+        
+    });
+
+    game.on('set-next-piece', function(index, matrix){
+        var preview = new MatrixDOMRenderer($("#preview"), createPaddedMatrix(matrix, 4, 4));
+        preview._render();
+    });
+}
+
+
+

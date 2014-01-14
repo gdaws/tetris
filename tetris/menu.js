@@ -114,3 +114,33 @@ Menu.prototype.button = function(text, clickHandler){
     }
     return button;
 };
+
+Menu.prototype.tablerow = function(row, cellNodeName){
+    
+    cellNodeName = cellNodeName || "td";
+    
+    var tr = document.createElement("tr");
+    
+    for(var i = 0; i < row.length; i++){
+        
+        var td = document.createElement(cellNodeName);
+        
+        var element = row[i];
+        
+        switch(typeof element){
+            case "string":
+            case "number":
+                element = document.createTextNode(element);
+                break;
+            case "function":
+                element = element();
+                break;
+        }
+        
+        td.appendChild(element);
+        
+        tr.appendChild(td);
+    }
+    
+    return tr;
+};
