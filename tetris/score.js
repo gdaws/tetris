@@ -50,6 +50,18 @@ Score.prototype.initNormalScoring = function(){
         self.add(self._dropScore);
         self._dropScore = 0;
     });
+    
+    this._game.on('gameover', function(){
+        self.emit('final', self.getStats());
+    });
+};
+
+Score.prototype.getStats = function(){
+    return {
+        score: this._score,
+        lines: this._lines,
+        level: this._gameMode.getLevel()
+    }  
 };
 
 Score.prototype.add = function(addition){
