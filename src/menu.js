@@ -106,14 +106,12 @@ Menu.prototype.title = function(text) {
 };
 
 Menu.prototype.button = function(text, clickHandler) {
-  var button = document.createElement("button");
-  button.type = "button";
-  button.appendChild(document.createTextNode(text));
-  button.className = "btn";
+  var button = $('<button type="button" class="btn"></button>');
+  button.text(text);
   if (clickHandler) {
-    button.onclick = clickHandler;
+    button.click(clickHandler);
   }
-  return button;
+  return button.get(0);
 };
 
 Menu.prototype.tablerow = function(row, cellNodeName) {
