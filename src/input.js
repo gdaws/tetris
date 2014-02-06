@@ -1,3 +1,4 @@
+var $ = window.jQuery;
 
 function onKeyDown(callback) {
   
@@ -12,44 +13,56 @@ function onKeyDown(callback) {
   
   var scheduleRepeat = function(delay, event) {
     
+    var keydown = keydowns[event.which];
+    
     var timeout = setTimeout(function() {
-      repeat(event);
+      repeat(keydown.event);
     }, delay);
     
-    keydowns[event.keyCode] = {
-      timeout: timeout,
-      firstEvent: event
-    };
+    keydown.timeout = timeout;
   };
   
   var onKeydown = function(event) {
     
-    var keydown = keydowns[event.keyCode];
+    var keydown = keydowns[event.which];
     
     if (keydown) {
-      if (keydown.firstEvent.isDefaultPrevented()) {
+      if (keydown.isDefaultPrevented) {
         event.preventDefault();
       }
     }
     else{
+      
+      keydowns[event.which] = {
+        timeout: null,
+        isDefaultPrevented: false,
+        event: {
+          which: event.which,
+          preventDefault: function(){},
+          isDefaultPrevented: function(){return false;}
+        }
+      };
+      
       repeat(event);
+      
+      keydowns[event.which].isDefaultPrevented = event.isDefaultPrevented();
     }
   };
   
   var onKeyup = function(event) {
-    var keydown = keydowns[event.keyCode];
+    var keydown = keydowns[event.which];
     if (keydown) {
       clearTimeout(keydown.timeout);
-      delete keydowns[event.keyCode];
+      delete keydowns[event.which];
     }
   };
   
-  $(window).keydown(onKeydown);
-  $(window).keyup(onKeyup);
+  $(document).keydown(onKeydown);
+  $(document).keyup(onKeyup);
   
   var uninstall = function() {
-    $(window).unbind("keydown", onKeydown);
-    $(window).unbind("keyup", onKeyup);
+    $(document).unbind("keydown", onKeydown);
+    $(document).unbind("keyup", onKeyup);
     for (var code in keydowns) {
       clearTimeout(keydowns[code].timeout);
     }
@@ -58,9 +71,9 @@ function onKeyDown(callback) {
   return uninstall;
 }
 
-function bindKeys(bindings) {    
+function bindKeys(bindings) {
   return onKeyDown(function(event) {
-    var binding = bindings[event.keyCode];
+    var binding = bindings[event.which];
     if (binding) {
       event.preventDefault();
       binding.action();
