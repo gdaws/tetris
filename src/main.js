@@ -15,6 +15,9 @@ var Menu = require('./menu');
 var CanvasMatrixRenderer  = require('./canvas/matrix_renderer');
 var CanvasGameRenderer    = require('./canvas/game_renderer');
 
+var DomMatrixRenderer = require('./dom/matrix_renderer');
+var DomGameRenderer = require('./dom/game_renderer');
+
 function createGame() {
   
   var game = new GameState(10, 20);
@@ -168,7 +171,9 @@ function initGameoverMenu(menu, game, scoreboard) {
 
 function initGameUI(game, gameMode, gameScoreboard, gameElement, menuElement) {
   
-  var view = new CanvasGameRenderer(gameElement, game);
+  var GameRenderer = getGameRenderer();
+  
+  var view = new GameRenderer(gameElement, game);
   
   var menu = new Menu(game, menuElement, gameElement);
   
@@ -192,13 +197,26 @@ function initStatusUI(score, scoreElement, linesElement, levelElement) {
   update();
 }
 
+function isCanvasSupported() {
+  var el = document.createElement('canvas');
+  return !!(el.getContext && el.getContext('2d'));
+}
+
+function getMatrixRenderer() {
+  return isCanvasSupported() ? CanvasMatrixRenderer : DomMatrixRenderer;
+}
+
+function getGameRenderer() {
+  return isCanvasSupported() ? CanvasGameRenderer : DomGameRenderer;  
+}
+
 function init(elementSelectors) {
   
   var game = createGame();
   var gameMode = new PlayerGameMode(game);
   var gameScore = new Score(game, gameMode);
   var gameScoreboard = new Scoreboard(gameScore, localStorage);
-
+  
   initGameUI(game, gameMode, gameScoreboard, $('#game'), $('#menu'));
 
   initStatusUI(gameScore, $('#score'), $('#lines'), $('#level'));
@@ -217,7 +235,9 @@ function init(elementSelectors) {
     }
   });
   
-  var previewRenderer = new CanvasMatrixRenderer(
+  var MatrixRenderer = getMatrixRenderer();
+  
+  var previewRenderer = new MatrixRenderer(
     $('#preview'),
     new Matrix(4, 4)
   );

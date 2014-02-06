@@ -56,7 +56,7 @@ function GameRenderer(container, game) {
 util.inherits(GameRenderer, MatrixRenderer);
 
 GameRenderer.prototype.renderBackground = function() {
-  this._render();
+  this.render();
 };
 
 GameRenderer.prototype.updateBackground = function() {

@@ -33,7 +33,7 @@ MatrixRenderer.prototype._calculatePixelDimensions = function() {
   this._tileHeight = Math.round(this._container.height() / matrix.getHeight());
 };
 
-MatrixRenderer.prototype._render = function() {
+MatrixRenderer.prototype.render = function() {
   
   this._container.empty();
   
@@ -86,6 +86,10 @@ MatrixRenderer.prototype._update = function() {
     var value = matrix.getAtIndex(index);
     tiles[index].className = 'tile-' + value;
   }
+};
+
+MatrixRenderer.prototype.setMatrix = function(matrix) {
+  this._matrix = matrix;
 };
 
 module.exports = MatrixRenderer;
