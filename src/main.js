@@ -222,19 +222,7 @@ function init(elementSelectors) {
 
   initStatusUI(gameScore, $('#score'), $('#lines'), $('#level'));
   
-  game.on('collapse', function(collapses) {
-    
-    var sounds = [
-      document.getElementById('sound-ding1'),
-      document.getElementById('sound-ding2'),
-      document.getElementById('sound-ding3'),
-      document.getElementById('sound-ding4')
-    ];
-    
-    for(var i = 0; i < collapses.length; i++) {
-      setTimeout(sounds[i].play.bind(sounds[i]), i * 150);
-    }
-  });
+  initSounds(game);
   
   var MatrixRenderer = getMatrixRenderer();
   
@@ -249,6 +237,26 @@ function init(elementSelectors) {
     previewRenderer.render();
   });
 }
+
+function initSounds(game) {
+  
+  var sounds = [
+    document.getElementById('sound-ding1'),
+    document.getElementById('sound-ding2'),
+    document.getElementById('sound-ding3'),
+    document.getElementById('sound-ding4')
+  ];
+  
+  if(!sounds[0] || !sounds[0].play) {
+    return;
+  }
+  
+  game.on('collapse', function(collapses) {
+    for(var i = 0; i < collapses.length; i++) {
+      setTimeout(sounds[i].play.bind(sounds[i]), i * 150);
+    }
+  });
+};
 
 function createPaddedMatrix(matrix, widthExtent, heightExtent) {
   
