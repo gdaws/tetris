@@ -1,0 +1,39 @@
+doctype html
+html
+
+  head
+    title Tetris
+   
+    link(rel='shortcut icon', href='favicon.ico')
+    link(rel='stylesheet', href='css/tetris.css?v=' + cache_tag('public/css/tetris.css'), type='text/css')
+    
+    script(src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js')
+    script(src='js/main.js?v=' + cache_tag('public/js/main.js'))
+    
+  body
+    .container
+      .status-container
+        table(border='0', cellpadding='5')
+          tbody
+            tr
+              td(colspan="2", align="center", width="100")
+                #preview
+            tr
+              td Level
+              td: #level
+            tr
+              td Score
+              td: #score
+            tr
+              td Lines
+              td: #lines
+    
+      .game-container
+        #game.game(style='width:300px; height: 600px;')
+        #menu.overlay
+    
+    audio#sound-ding1(src='sounds/bell.ogg?v=' + cache_tag('public/sounds/bell.ogg'))
+    audio#sound-ding2(src='sounds/bell.ogg?v=' + cache_tag('public/sounds/bell.ogg'))
+    audio#sound-ding3(src='sounds/bell.ogg?v=' + cache_tag('public/sounds/bell.ogg'))
+    audio#sound-ding4(src='sounds/bell.ogg?v=' + cache_tag('public/sounds/bell.ogg'))
+    
