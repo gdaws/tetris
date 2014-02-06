@@ -9,8 +9,6 @@ function GameRenderer(container, game) {
   
   this._piece = null;
   
-  this._blockBackgroundUpdate = false;
-  
   var self = this;
   
   game.on('hit', function() {
@@ -18,21 +16,13 @@ function GameRenderer(container, game) {
   });
   
   game.on('collapse', function(collapses) {
-    
-    self._blockBackgroundUpdate = true;
-    
-    game.pause();
-    
+
     for (var i = 0; i < collapses.length; i++) {
       var y = collapses[i];
       $(self.getRowOfTiles(y)).addClass('tile-collapsing');
     }
     
-    setTimeout(function() {
-      self._blockBackgroundUpdate = false;
-      self.updateBackground();
-      game.resume();
-    }, 300);
+    self.updateBackground();
   });
   
   game.on('new-piece', function() {
@@ -50,6 +40,7 @@ function GameRenderer(container, game) {
   game.on('start', function() {
     self._container.empty();
     self.renderBackground();
+    self.renderMovingPiece();
   });
 };
 
@@ -60,9 +51,7 @@ GameRenderer.prototype.renderBackground = function() {
 };
 
 GameRenderer.prototype.updateBackground = function() {
-  if (!this._blockBackgroundUpdate) {
-    this._update();
-  }
+  this._update();
 };
 
 GameRenderer.prototype.renderMovingPiece = function() {
