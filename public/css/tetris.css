@@ -1,0 +1,133 @@
+@-webkit-keyframes pulsate {
+    0% {-webkit-filter: brightness(100%);}
+    50% {-webkit-filter: brightness(130%);}
+    100% {-webkit-filter: brightness(100%);}
+}
+
+@-webkit-keyframes flash {
+    0% {-webkit-filter: brightness(100%);}
+    50% {-webkit-filter: brightness(300%);}
+    100% {-webkit-filter: brightness(100%);}
+}
+
+body {
+    background:#343838 url(../img/stardust.png);
+    font-family:"Press Start 2P"; 
+    color:#555;
+    color:#f3e678;
+    text-shadow:1px 1px 0px rgba(0,0,0,1);
+}
+
+h1,h2,h3,h4,h5 { 
+    font-family:"Press Start 2P"; 
+    text-align:center; 
+    text-transform: uppercase;
+}
+
+h1 {
+    color:#f3e678;
+    text-shadow:3px 3px 0px rgba(0,0,0,1);
+}
+
+.container { width:544px; margin:4em auto; }
+
+.btn {
+    display:inline-block;
+    cursor:pointer;
+    padding:0.75em; 
+    font-family:"Press Start 2P";
+    text-transform: uppercase;
+    background:#36b336;
+    border:3px solid #000;
+    border-radius:6px;
+    box-shadow: inset -3px -3px 0px rgba(0, 0, 0, 0.5), 
+        inset 3px 3px 0px rgba(255, 255, 255, 0.3);
+        
+    -webkit-animation: pulsate 1s ease-out;
+    -webkit-animation-iteration-count: infinite; 
+}
+
+.btn:active{
+    box-shadow: inset -3px -3px 0px rgba(255, 255, 255, 0.3), 
+        inset 3px 3px 0px rgba(0, 0, 0, 0.5);
+}
+
+.btn:hover{
+    -webkit-filter:brightness(150%);
+}
+
+.game-container {
+    width:300px;
+    height:600px;
+    position:relative;
+    overflow:hidden;
+    box-shadow: 0px 0px 15px #222;
+}
+
+.game-container, .status-container{
+    border:8px solid rgba(255, 255, 255, 0.7); 
+    border-radius:7px;
+}
+
+.status-container{ 
+    float:right; 
+    width:200px; 
+    margin-top:20px;
+    padding:10px; 
+    margin-bottom:1em;
+    border-left:0;
+    box-shadow: 0px 0px 7px #222;
+    border-top-left-radius:0px;
+    border-bottom-left-radius:0px;       
+}
+
+.game, .status-container{
+    background:#000 url(../img/classy_fabric.png);
+}
+
+.status-container #preview { 
+    width:100px; height:100px; 
+    overflow:visible; 
+}
+
+.game-container .overlay { 
+    position:absolute;
+    top:100px;
+    left:0px;
+    width:300px;
+    height:400px;
+}
+
+.tile-0, .tile-1, .tile-2, .tile-3, .tile-4, .tile-5, .tile-6, .tile-7{
+    box-shadow: inset 1px 1px 0px rgba(255, 255, 255, 0.1);
+}
+
+.tile-1 { background:#36b3b3; }
+.tile-2 { background:#3636b3; }
+.tile-3 { background:#b38636; }
+.tile-4 { background:#b3b336; }
+.tile-5 { background:#36b336; }
+.tile-6 { background:#b336b3; }
+.tile-7 { background:#b33636; }
+
+.tile-1, .tile-2, .tile-3, .tile-4, .tile-5, .tile-6, .tile-7{
+    border-radius:2px;
+    box-shadow: inset -3px -3px 0px rgba(0, 0, 0, 0.5), 
+        inset 3px 3px 0px rgba(255, 255, 255, 0.3), 
+        0px 0px 0px 2px rgba(0, 0, 0, 0.5);
+}
+
+.piece .tile-0, .status-container .tile-0{
+    box-shadow: none;
+}
+
+.tile-collapsing {
+    -webkit-animation: flash 100ms ease-out;
+    -webkit-animation-iteration-count: infinite; 
+}
+
+.scoreboard { margin:1em 0; width:100%; }
+.scoreboard td { text-align:center; }
+.scoreboard tr.selected td { background:#ccc; opacity:0.8; }
+
+#menu{ text-align:center;}

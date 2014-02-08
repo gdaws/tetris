@@ -1,15 +1,16 @@
 doctype html
 html
-
+  
   head
     title Tetris
-   
+    
     link(rel='shortcut icon', href='favicon.ico')
+    link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Press+Start+2P', type='text/css')
     link(rel='stylesheet', href='css/tetris.css?v=' + cache_tag('public/css/tetris.css'), type='text/css')
     
     script(src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js')
     script(src='js/main.js?v=' + cache_tag('public/js/main.js'))
-    
+  
   body
     .container
       .status-container
@@ -37,3 +38,4 @@ html
     audio#sound-ding3(src='sounds/bell.ogg?v=' + cache_tag('public/sounds/bell.ogg'))
     audio#sound-ding4(src='sounds/bell.ogg?v=' + cache_tag('public/sounds/bell.ogg'))
     
+    include analytics.jade
