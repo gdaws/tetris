@@ -6,20 +6,24 @@ function onKeyDown(callback) {
   
   var repeat = function(event) {
     var delay = callback(event);
-    if (delay > 0) {
-      scheduleRepeat(delay, event);
-    }
+    scheduleRepeat(delay, event);
   };
   
   var scheduleRepeat = function(delay, event) {
     
     var keydown = keydowns[event.which];
     
-    var timeout = setTimeout(function() {
-      repeat(keydown.event);
-    }, delay);
-    
-    keydown.timeout = timeout;
+    if(delay >= 0){
+      
+      var timeout = setTimeout(function() {
+        repeat(keydown.event);
+      }, delay);
+      
+      keydown.timeout = timeout;
+    }
+    else{
+      keydown.timeout = null;
+    }
   };
   
   var onKeydown = function(event) {
@@ -27,6 +31,11 @@ function onKeyDown(callback) {
     var keydown = keydowns[event.which];
     
     if (keydown) {
+      
+      if(keydown.timeout === null){
+        repeat(event);
+      }
+      
       if (keydown.isDefaultPrevented) {
         event.preventDefault();
       }

@@ -49,7 +49,7 @@ function createPlayerController(game) {
     38: {action: 'rotate',          delay: 200},
     39: {action: 'right',           delay: 100},
     40: {action: 'down',            delay: 40},
-    32: {action: 'drop',            delay: 0}
+    32: {action: 'drop',            delay: -1}
   });
   
   return player;

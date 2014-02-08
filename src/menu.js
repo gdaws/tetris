@@ -109,7 +109,7 @@ Menu.prototype.button = function(text, clickHandler) {
   var button = $('<button type="button" class="btn"></button>');
   button.text(text);
   if (clickHandler) {
-    button.click(clickHandler);
+    button.get(0).onclick = clickHandler;
   }
   return button.get(0);
 };
