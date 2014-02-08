@@ -13,6 +13,13 @@ function Scoreboard(scoring, storage) {
   var self = this;
   
   scoring.on('final', function(stats) {
+    
+    if (ga) {
+      ga('send', 'event', 'game', 'gameover', 'score', stats.score);
+      ga('send', 'event', 'game', 'gameover', 'lines', stats.lines);
+      ga('send', 'event', 'game', 'gameover', 'level', stats.level);
+    }
+    
     self._insertStats(stats);
     self._save();
   });
@@ -21,7 +28,7 @@ function Scoreboard(scoring, storage) {
 util.inherits(Scoreboard, EventEmitter);
 
 Scoreboard.prototype.getCurrentStats = function() {
-  return this._scoring.getStats();    
+  return this._scoring.getStats();
 };
 
 Scoreboard.prototype.getBestStats = function() {
