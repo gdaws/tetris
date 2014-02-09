@@ -19,6 +19,8 @@ var CanvasGameRenderer    = require('./canvas/game_renderer');
 var DomMatrixRenderer = require('./dom/matrix_renderer');
 var DomGameRenderer = require('./dom/game_renderer');
 
+var sound = require('./sound');
+
 function createGame() {
   
   var game = new GameState(10, 20);
@@ -222,14 +224,22 @@ function init(elementSelectors) {
 
   initStatusUI(gameScore, $('#score'), $('#lines'), $('#level'));
   
-  initSounds(game);
+  initNextPiecePreviewUI(game, $('#preview'));
+  
+  sound.initSounds(game, {
+    collapses:[
+      $("#collapse1-sound").get(0),
+      $("#collapse2-sound").get(0),
+      $("#collapse3-sound").get(0),
+      $("#collapse4-sound").get(0),
+    ] 
+  });
+}
+
+function initNextPiecePreviewUI(game, element) {
   
   var MatrixRenderer = getMatrixRenderer();
-  
-  var previewRenderer = new MatrixRenderer(
-    $('#preview'),
-    new Matrix(4, 4)
-  );
+  var previewRenderer = new MatrixRenderer(element, new Matrix(4, 4));
   
   game.on('set-next-piece', function(index, matrix) {
     
@@ -237,26 +247,6 @@ function init(elementSelectors) {
     previewRenderer.render();
   });
 }
-
-function initSounds(game) {
-  
-  var sounds = [
-    document.getElementById('sound-ding1'),
-    document.getElementById('sound-ding2'),
-    document.getElementById('sound-ding3'),
-    document.getElementById('sound-ding4')
-  ];
-  
-  if(!sounds[0] || !sounds[0].play) {
-    return;
-  }
-  
-  game.on('collapse', function(collapses) {
-    for(var i = 0; i < collapses.length; i++) {
-      setTimeout(sounds[i].play.bind(sounds[i]), i * 150);
-    }
-  });
-};
 
 function createPaddedMatrix(matrix, widthExtent, heightExtent) {
   

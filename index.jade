@@ -33,9 +33,9 @@ html
         #game.game(style='width:300px; height: 600px;')
         #menu.overlay
     
-    audio#sound-ding1(src='sounds/bell.ogg?v=' + cache_tag('public/sounds/bell.ogg'))
-    audio#sound-ding2(src='sounds/bell.ogg?v=' + cache_tag('public/sounds/bell.ogg'))
-    audio#sound-ding3(src='sounds/bell.ogg?v=' + cache_tag('public/sounds/bell.ogg'))
-    audio#sound-ding4(src='sounds/bell.ogg?v=' + cache_tag('public/sounds/bell.ogg'))
+    audio#collapse1-sound(src='sounds/beep1.mp3?v=' + cache_tag('public/sounds/beep1.mp3'), preload='auto')
+    audio#collapse2-sound(src='sounds/beep2.mp3?v=' + cache_tag('public/sounds/beep2.mp3'), preload='auto')
+    audio#collapse3-sound(src='sounds/beep3.mp3?v=' + cache_tag('public/sounds/beep3.mp3'), preload='auto')
+    audio#collapse4-sound(src='sounds/beep4.mp3?v=' + cache_tag('public/sounds/beep4.mp3'), preload='auto')
     
     include analytics.jade
