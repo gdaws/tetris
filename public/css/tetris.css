@@ -4,18 +4,12 @@
     100% {-webkit-filter: brightness(100%);}
 }
 
-@-webkit-keyframes flash {
-    0% {-webkit-filter: brightness(100%);}
-    50% {-webkit-filter: brightness(300%);}
-    100% {-webkit-filter: brightness(100%);}
-}
-
 body {
     background:#343838 url(../img/stardust.png);
     font-family:"Press Start 2P"; 
-    color:#555;
     color:#f3e678;
-    text-shadow:1px 1px 0px rgba(0,0,0,1);
+    text-shadow:1px 1px 0px rgba(0,0,0,0.6);
+    font-size:0.84em;
 }
 
 h1,h2,h3,h4,h5 { 
@@ -35,6 +29,7 @@ h1 {
     display:inline-block;
     cursor:pointer;
     padding:0.75em; 
+    font-size:1.1em;
     font-family:"Press Start 2P";
     text-transform: uppercase;
     background:#36b336;
@@ -86,8 +81,9 @@ h1 {
 }
 
 .status-container #preview { 
-    width:100px; height:100px; 
-    overflow:visible; 
+    width:100px;
+    height:100px;
+    overflow:visible;
 }
 
 .game-container .overlay { 
@@ -121,13 +117,11 @@ h1 {
     box-shadow: none;
 }
 
-.tile-collapsing {
-    -webkit-animation: flash 100ms ease-out;
-    -webkit-animation-iteration-count: infinite; 
-}
-
 .scoreboard { margin:1em 0; width:100%; }
 .scoreboard td { text-align:center; }
 .scoreboard tr.selected td { background:#ccc; opacity:0.8; }
 
-#menu{ text-align:center;}
+#menu{ text-align:center; }
+
+table#controls { font-size:0.6em; margin-bottom:1em; }
+table#controls td { padding:0.5em 0; border-bottom:1px solid rgba(255, 255, 255, 0.4); }

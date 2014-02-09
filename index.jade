@@ -13,7 +13,41 @@ html
   
   body
     .container
-      .status-container
+      
+      #game-start
+        h1 Tetris
+        
+        table#controls(cellpadding='0', cellspacing='0', width='100%')
+          tbody
+
+              td Right arrow
+              td Move right 
+            tr
+              td Left arrow
+              td Move left
+            tr
+              td Up arrow
+              td Rotate
+            tr
+              td Down arrow
+              td Move down
+            tr
+              td Space
+              td Fast drop
+            tr
+              td P
+              td Pause
+      
+      #game-loading
+      
+      script.
+        $('#game-loading').text('Game loading...')
+      
+      noscript
+        .error.
+          Error! Your web browser has Javascript disabled.
+      
+      .status-container(style='display:none')
         table(border='0', cellpadding='5')
           tbody
             tr
@@ -29,7 +63,7 @@ html
               td Lines
               td: #lines
     
-      .game-container
+      .game-container(style='display:none')
         #game.game(style='width:300px; height: 600px;')
         #menu.overlay
     
@@ -39,3 +73,4 @@ html
     audio#collapse4-sound(src='sounds/beep4.mp3?v=' + cache_tag('public/sounds/beep4.mp3'), preload='auto')
     
     include analytics.jade
+    

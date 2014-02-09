@@ -60,12 +60,13 @@ function createPlayerController(game) {
 function initStartMenu(menu, game) {
   
   var el = document.createElement('div');
-  el.appendChild(menu.title('Tetris'));
+  
+  $('#game-start').detach().appendTo(el);
   
   var hide;
   
   var playButton = menu.button('Play', function() {
-    game.start();    
+    game.start();
   });
   
   el.appendChild(playButton);
@@ -261,6 +262,10 @@ function createPaddedMatrix(matrix, widthExtent, heightExtent) {
 }
 
 $(document).ready(function() {
+  
+  $('#game-loading').remove();
+  $('.status-container,.game-container').show();
+  
   init({
     game:  '#game',
     menu:  '#menu',
@@ -268,4 +273,5 @@ $(document).ready(function() {
     lines: '#lines',
     level: '#level'
   });
+  
 });
