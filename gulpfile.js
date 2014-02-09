@@ -14,6 +14,17 @@ function generateCacheTag(filename) {
   return hash.digest('hex').substring(0, 7);
 }
 
+function getApplicationMeta() {
+  
+  if(fs.existsSync('./app.json')){
+    return JSON.parse(fs.readFileSync('./app.json'));
+  }
+  
+  return {
+    name: 'Untitled game'
+  };
+}
+
 gulp.task('compile_js_bundle', function() {
   return gulp.src('src/main.js')
     .pipe(browserify())
@@ -25,7 +36,8 @@ gulp.task('compile_html', ['compile_js_bundle'], function() {
   return gulp.src('index.jade')
     .pipe(jade({
       locals: {
-        cache_tag: generateCacheTag
+        cache_tag: generateCacheTag,
+        app: getApplicationMeta()
       }
     }))
     .pipe(gulp.dest('public'));

@@ -1,8 +1,10 @@
 doctype html
 html
-  
   head
-    title Tetris
+    title= app.name + ' - ' + app.description
+    
+    meta(charset='utf-8')
+    meta(name='description', content=app.meta_description)
     
     link(rel='shortcut icon', href='favicon.ico')
     link(rel='stylesheet', href='//fonts.googleapis.com/css?family=Press+Start+2P', type='text/css')
@@ -15,11 +17,11 @@ html
     .container
       
       #game-start
-        h1 Tetris
+        h1= app.name
         
         table#controls(cellpadding='0', cellspacing='0', width='100%')
           tbody
-
+            tr
               td Right arrow
               td Move right 
             tr
@@ -72,5 +74,11 @@ html
     audio#collapse3-sound(src='sounds/beep3.mp3?v=' + cache_tag('public/sounds/beep3.mp3'), preload='auto')
     audio#collapse4-sound(src='sounds/beep4.mp3?v=' + cache_tag('public/sounds/beep4.mp3'), preload='auto')
     
-    include analytics.jade
-    
+    script.
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', '#{app.ga_tracking_code}', 'auto');
+      ga('send', 'pageview');
