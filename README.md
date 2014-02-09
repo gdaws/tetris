@@ -2,10 +2,6 @@
 
 ![Screenshot](http://gdaws.github.io/tetris/screenshot.png)
 
-# HTML5 Tetris clone
-
-![Screenshot](http://gdaws.github.io/tetris/screenshot.png)
-
 [Play the game](http://tetris.gdaws.co.uk)
 
 ## Asset credits
