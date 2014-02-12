@@ -6,8 +6,8 @@ function GameRenderer(container, game) {
   MatrixRenderer.call(this, container, game.getBackgroundMatrix());
   
   this._game = game;
-  
   this._piece = null;
+  this._renderUpdate = true;
   
   var self = this;
   
@@ -25,7 +25,7 @@ function GameRenderer(container, game) {
     
     var flashInterval = setInterval(function() {
       flashCount += 60;
-      self.render();
+      self._renderUpdate = true;
     }, 16);
     
     var background = self._background;
@@ -55,8 +55,6 @@ function GameRenderer(container, game) {
       }
     };
     
-    self.render();
-    
     setTimeout(function() {
       
       clearInterval(flashInterval);
@@ -65,7 +63,7 @@ function GameRenderer(container, game) {
       
       self.createBackgroundImage();
       
-      self.render();
+      self._renderUpdate = true;
       
       game.resume();
       
@@ -73,21 +71,33 @@ function GameRenderer(container, game) {
   });
   
   game.on('new-piece', function() {
-    self.render();
+    self._renderUpdate = true;
   });
   
   game.on('move', function() {
-    self.render();
+    self._renderUpdate = true;
   });
   
   game.on('rotate', function() {
-    self.render();
+    self._renderUpdate = true;
   });
   
   game.on('start', function() {
     self.createBackgroundImage();
-    self.render();
+    self._renderUpdate = true;
   });
+  
+  var renderLoop = function() {
+    
+    if(self._renderUpdate){
+      self._renderUpdate = false;
+      self.render();
+    }
+    
+    window.requestAnimationFrame(renderLoop);
+  };
+  
+  renderLoop();
 };
 
 util.inherits(GameRenderer, MatrixRenderer);
@@ -178,12 +188,13 @@ GameRenderer.prototype.createBackgroundImage = function() {
 
 GameRenderer.prototype.render = function() {
   
+  var self = this;
+  
   var ctx = this._ctx;
   
   if(this._background) {
     ctx.putImageData(this._background, 0, 0);
   }
-  
   
   this.renderMovingPiece();
 };
