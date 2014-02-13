@@ -253,6 +253,25 @@ GameState.prototype.move = function(x, y) {
   }
 };
 
+GameState.prototype._applyRotate = function(rotated, x, y) {
+  
+  var collision = this._background.collision(x, y, rotated);
+  
+  if(!collision){
+    
+    this._movingPiecePosition.x = x;
+    this._movingPiecePosition.y = y;
+    
+    this._movingPieceMatrix = rotated;
+    
+    this.emit('rotate');
+    
+    return true;
+  }
+  
+  return false;
+};
+
 GameState.prototype.rotate = function() {
   
   if (!this._running) {
@@ -261,9 +280,42 @@ GameState.prototype.rotate = function() {
   
   var rotated = this._movingPieceMatrix.rotate();
   
-  if (!this._background.collision(this._movingPiecePosition.x, this._movingPiecePosition.y, rotated)) {
-    this._movingPieceMatrix = rotated;
-    this.emit('rotate');
+  var x = this._movingPiecePosition.x;
+  var y = this._movingPiecePosition.y;
+  
+  if (this._applyRotate(rotated, x, y)) {
+    return; 
+  }
+  
+  var start = x;
+  
+  var background = this._background;
+  var piece = this._movingPieceMatrix;
+  
+  var rightEnd = start + rotated.getWidth();
+  
+  for (x = start; x < rightEnd; x++) {
+  
+    if (background.collision(x, y, piece)) {
+      break;
+    }
+    
+    if (this._applyRotate(rotated, x, y)) {
+      return;
+    }
+  }
+  
+  var leftEnd = start - rotated.getWidth();
+  
+  for (x = start; x > leftEnd; x--) {
+    
+    if (background.collision(x, y, piece)) {
+      break;
+    }
+    
+    if(this._applyRotate(rotated, x, y)){
+      return;
+    }
   }
 };
 
